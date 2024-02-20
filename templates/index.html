@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>System Monitoring Dashboard</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik:400,700">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>System Monitoring Dashboard</h1>
+        <div class="data">
+            <h2>CPU Usage</h2>
+            <p><span id="cpu-usage">{{ cpu_usage }}%</span></p>
+            <canvas id="cpu-chart"></canvas>
+        </div>
+        <div class="data">
+            <h2>Memory Usage</h2>
+            <p><span id="mem-usage">{{ mem_usage }}%</span></p>
+            <canvas id="mem-chart"></canvas>
+        </div>
+        <div class="data">
+            <h2>Alerts</h2>
+            <div id="msg" class="alert alert-ok"></div>
+        </div>
+        <button class="dark-mode-toggle">
+            <i class="fas fa-sun sun-icon"></i>
+            <i class="fas fa-moon moon-icon"></i>
+        </button>
+        <div class="logout-button-container">
+            <a href="/logout" class="logout-button">Logout</a>
+        </div>
+        <div class="update-time">Next Update: <span id="next-update-time"></span></div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='js/index-script.js') }}"></script>
+</body>
+
+</html>
