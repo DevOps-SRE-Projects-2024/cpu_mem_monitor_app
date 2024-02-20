@@ -8,14 +8,35 @@ app = Flask(__name__, static_folder='static')
 app.secret_key = key
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
+# Dictionary to store registered users (for simplicity, you may want to use a database in a real application)
+users = {'admin': 'admin'}
 
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        if username and password:
+            # Check if the username is already taken
+            if username in users:
+                error_msg = "Username already taken. Please choose a different one."
+                return render_template("register.html", error_msg=error_msg)
+
+            # Add the new user to the users dictionary
+            users[username] = password
+            session["logged_in"] = True
+            return redirect("/")
+
+    return render_template("register.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
-        if username == "admin" and password == "admin":
+
+        if username in users and users[username] == password:
             session["logged_in"] = True
             return redirect("/")
         else:
