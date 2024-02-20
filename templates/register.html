@@ -5,21 +5,76 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Registration</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            max-width: 300px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        p.error {
+            color: red;
+        }
+    </style>
 </head>
 <body>
     <h1>User Registration</h1>
     {% if error_msg %}
-        <p style="color: red;">{{ error_msg }}</p>
+        <p class="error">{{ error_msg }}</p>
     {% endif %}
     <form method="post" action="/register">
         <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br>
+        <input type="text" id="username" name="username" required>
 
         <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br>
+        <input type="password" id="password" name="password" required>
 
         <button type="submit">Register</button>
     </form>
 </body>
 </html>
-
