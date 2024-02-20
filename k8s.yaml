@@ -1,0 +1,62 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitor-cpu-ns
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: monitor-cpu-ns
+  name: deployment-monitor-cpu
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: app-monitor-cpu
+  replicas: 5
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: app-monitor-cpu
+    spec:
+      containers:
+      - image: public.ecr.aws/l6m2t8p7/docker-2048:latest
+        imagePullPolicy: Always
+        name: app-monitor-cpu
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: monitor-cpu-ns
+  name: service-monitor-cpu
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  type: NodePort
+  selector:
+    app.kubernetes.io/name: app-monitor-cpu
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: monitor-cpu-ns
+  name: ingress-monitor-cpu
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: service-monitor-cpu
+              port:
+                number: 80
