@@ -9,7 +9,6 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 script {
-                    sh 'cd /home/ubuntu/'
                     sh 'git clone https://github.com/DevOps-SRE-Projects-2024/cpu_mem_monitor_app.git'
                 }
             }
@@ -18,7 +17,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                     sh 'cd /home/ubuntu/cpu_mem_monitor_app/'
+                     sh 'cd cpu_mem_monitor_app'
                      sh 'sudo docker build -t cpu_monitor_image .'
                      sh 'sudo docker run -p 5000:5000 cpu_monitor_image'
                     }
