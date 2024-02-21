@@ -18,8 +18,8 @@ pipeline {
             steps {
                 script {
                      sh 'cd cpu_mem_monitor_app'
-                     sh 'sudo docker build -t cpu_monitor_image .'
-                     sh 'sudo docker run -p 5000:5000 cpu_monitor_image'
+                     sh 'docker build -t cpu_monitor_image .'
+                     sh 'docker run -p 5000:5000 cpu_monitor_image'
                     }
                 }
             }
