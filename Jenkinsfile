@@ -3,15 +3,13 @@ pipeline {
 
     environment {
         DOCKER_HUB_CREDENTIALS = 'docker_hub_creds_id' // Update with your Docker Hub credentials ID in Jenkins
-        AWS_ACCESS_KEY_ID = credentials('aws-access-key-id') // Update with your AWS access key ID credential ID in Jenkins
-        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key') // Update with your AWS secret access key credential ID in Jenkins
     }
 
     stages {
         stage('Clone Repository') {
             steps {
                 script {
-                    checkout scm
+                    git clone https://github.com/DevOps-SRE-Projects-2024/cpu_mem_monitor_app.git
                 }
             }
         }
@@ -19,19 +17,27 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_HUB_CREDENTIALS) {
-                        def customImage = docker.build('your_username/your_repository:latest', '.')
-                        customImage.push()
+                     cd /home/ubuntu/cpu_mem_monitor_app/
+                     sudo docker build -t cpu_monitor_image .
+                     sudo docker run -p 5000:5000 cpu_monitor_image
                     }
                 }
             }
         }
-
+/*
         stage('Create EKS Cluster') {
             steps {
                 script {
-                    // Add steps to create EKS cluster with Fargate profile
-                    // Use AWS CLI or AWS SDK for these operations
+                    // Use withCredentials to securely access AWS credentials
+                    withCredentials([[
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                        credentialsId: 'aws_creds', // Update with your AWS credentials ID in Jenkins
+                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                    ]]) {
+                        // Add steps to create EKS cluster with Fargate profile
+                        // Use AWS CLI or AWS SDK for these operations
+                    }
                 }
             }
         }
@@ -54,7 +60,7 @@ pipeline {
             }
         }
     }
-
+*/
     post {
         success {
             echo 'Pipeline succeeded!'
@@ -64,4 +70,3 @@ pipeline {
         }
     }
 }
-
