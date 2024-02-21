@@ -19,7 +19,23 @@ pipeline {
                 script {
                      sh 'cd cpu_mem_monitor_app'
                      sh 'docker build -t cpu_monitor_image .'
-                     sh 'docker run -p 5000:5000 cpu_monitor_image'
+                     // sh 'docker run -p 5000:5000 cpu_monitor_image'
+                     // Check if a container with the given image is already running
+                def existingContainerId = sh(script: 'docker ps -q --filter "ancestor=cpu_monitor_image"', returnStatus: true).trim()
+
+                if (existingContainerId) {
+                    echo "Stopping and removing existing container with ID: ${existingContainerId}"
+                    sh "docker stop ${existingContainerId}"
+                    sh "docker rm ${existingContainerId}"
+                }
+
+                // Run Docker container in the background and redirect logs to a file
+                sh 'docker run -p 5000:5000 cpu_monitor_image > docker_logs.txt 2>&1 &'
+                
+                // Capture the new container ID for potential use later
+                def newContainerId = sh(script: 'docker ps -q --filter "ancestor=cpu_monitor_image"', returnStatus: true).trim()
+                
+                echo "New Docker container started with ID: ${newContainerId}"
                     }
                 }
             }
