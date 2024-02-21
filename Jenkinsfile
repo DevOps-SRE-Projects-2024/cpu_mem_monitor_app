@@ -19,7 +19,10 @@ pipeline {
                 script {
                      sh 'cd cpu_mem_monitor_app'
                      sh 'docker build -t cpu_monitor_image .'
-                     sh 'docker run -p 5000:5000 cpu_monitor_image'
+                     sh 'docker run -p 5000:5000 cpu_monitor_image > docker_logs.txt 2>&1 &'
+                     def containerId = sh(script: 'docker ps -q --filter "ancestor=cpu_monitor_image"', returnStatus: true).trim()
+                
+                     echo "Docker container started with ID: ${containerId}"
                     }
                 }
             }
