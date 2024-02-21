@@ -21,7 +21,7 @@ pipeline {
                      sh 'docker build -t cpu_monitor_image .'
                      // sh 'docker run -p 5000:5000 cpu_monitor_image'
                      // Check if a container with the given image is already running
-                def existingContainerId = sh(script: 'docker ps | grep "python3 app.py" | awk \'{print $1}\'', returnStatus: true).trim()
+               def existingContainerId = sh(script: 'docker ps | grep "python3 app.py" | awk \'{print $1}\'', returnStdout: true).trim()
 
                 if (existingContainerId) {
                     echo "Stopping and removing existing container with ID: ${existingContainerId}"
