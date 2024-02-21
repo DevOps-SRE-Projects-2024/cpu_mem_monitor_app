@@ -3,15 +3,13 @@ pipeline {
 
     environment {
         DOCKER_HUB_CREDENTIALS = 'docker_hub_creds_id' // Update with your Docker Hub credentials ID in Jenkins
-        AWS_ACCESS_KEY_ID = credentials('aws-access-key-id') // Update with your AWS access key ID credential ID in Jenkins
-        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key') // Update with your AWS secret access key credential ID in Jenkins
     }
 
     stages {
         stage('Clone Repository') {
             steps {
                 script {
-                    checkout scm
+                    sh 'pwd'
                 }
             }
         }
@@ -19,19 +17,41 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_HUB_CREDENTIALS) {
-                        def customImage = docker.build('your_username/your_repository:latest', '.')
-                        customImage.push()
+                     sh 'cd cpu_mem_monitor_app'
+                     sh 'docker build -t cpu_monitor_image .'
+                     // sh 'docker run -p 5000:5000 cpu_monitor_image'
+                     // Check if a container with the given image is already running
+               def existingContainerId = sh(script: 'docker ps | grep "python3 app.py" | awk \'{print $1}\'', returnStdout: true).trim()
+
+                if (existingContainerId) {
+                    echo "Stopping and removing existing container with ID: ${existingContainerId}"
+                    sh "docker stop ${existingContainerId}"
+                    sh "docker rm ${existingContainerId} -f"
+                }
+
+                // Run Docker container in the background and redirect logs to a file
+                sh 'docker run -p 5000:5000 cpu_monitor_image > docker_logs.txt 2>&1 &'
+                
+                
+            
                     }
                 }
             }
         }
-
+/*
         stage('Create EKS Cluster') {
             steps {
                 script {
-                    // Add steps to create EKS cluster with Fargate profile
-                    // Use AWS CLI or AWS SDK for these operations
+                    // Use withCredentials to securely access AWS credentials
+                    withCredentials([[
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                        credentialsId: 'aws_creds', // Update with your AWS credentials ID in Jenkins
+                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                    ]]) {
+                        // Add steps to create EKS cluster with Fargate profile
+                        // Use AWS CLI or AWS SDK for these operations
+                    }
                 }
             }
         }
@@ -54,7 +74,7 @@ pipeline {
             }
         }
     }
-
+*/
     post {
         success {
             echo 'Pipeline succeeded!'
@@ -64,4 +84,3 @@ pipeline {
         }
     }
 }
-
