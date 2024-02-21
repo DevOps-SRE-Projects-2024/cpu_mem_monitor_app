@@ -9,6 +9,7 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 script {
+                    sh 'cd /home/ubuntu/'
                     sh 'git clone https://github.com/DevOps-SRE-Projects-2024/cpu_mem_monitor_app.git'
                 }
             }
