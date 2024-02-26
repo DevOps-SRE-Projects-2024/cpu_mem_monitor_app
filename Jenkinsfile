@@ -17,7 +17,6 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                     sh 'cd cpu_mem_monitor_app'
                      sh 'docker build -t cpu_monitor_image .'
                      // sh 'docker run -p 5000:5000 cpu_monitor_image'
                      // Check if a container with the given image is already running
