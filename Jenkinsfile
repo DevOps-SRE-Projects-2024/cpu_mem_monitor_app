@@ -65,6 +65,7 @@ pipeline {
           script {
                     // Authenticate Docker with Google Container Registry
                     withCredentials([file(credentialsId: 'jenkins_gcp', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+                sh "gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://us-docker.pkg.dev"
                 sh "gcloud auth activate-service-account --key-file=\$GOOGLE_APPLICATION_CREDENTIALS"
                 sh "gcloud auth configure-docker"
             }
