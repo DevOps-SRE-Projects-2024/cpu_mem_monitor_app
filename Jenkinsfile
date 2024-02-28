@@ -68,7 +68,7 @@ pipeline {
     stage("Tagging ECR Image") {
       steps {
         script {
-          sh "docker tag  cpu_mem_monitor.gcr.io/${params.GCP_PROJECT_ID}/${params.GCR_IMAGE_NAME}:${params.GCR_IMAGE_TAG}"
+          sh "docker tag cpu_monitor_image:latest cpu_mem_monitor.gcr.io/${params.GCP_PROJECT_ID}/${params.GCR_IMAGE_NAME}:${params.GCR_IMAGE_TAG}"
 
         }
       }
