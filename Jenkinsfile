@@ -76,11 +76,16 @@ pipeline {
 
          stage("Pushing ECR Image to GCR") {
       steps {
-        script {
-          withDockerRegistry([credentialsId: "gcr:${params.GCP_PROJECT_ID}", url: "https://gcr.io"]) {
-            sh "docker push gcr.io/${params.GCP_PROJECT_ID}/${params.GCR_IMAGE_NAME}:${params.GCR_IMAGE_TAG}"
-          }
-        }
+
+          script {
+                    // Authenticate Docker with Google Container Registry
+                    withCredentials([gcpServiceAccount(credentialsId: 'jenkins_gcp', projectId: GCP_PROJECT_ID)]) {
+                        sh "gcloud auth configure-docker"
+                    }
+                    
+                    // Push the Docker image to Google Container Registry
+                   sh "docker push cpu_mem_monitor.gcr.io/${params.GCP_PROJECT_ID}/${params.GCR_IMAGE_NAME}:${params.GCR_IMAGE_TAG}"
+                }
       }
     }
         }
