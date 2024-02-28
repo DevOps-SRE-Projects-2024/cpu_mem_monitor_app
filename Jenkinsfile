@@ -1,7 +1,15 @@
 pipeline {
     agent any
 
-    stage('Setup parameters') {
+    
+
+    environment {
+        DOCKER_HUB_CREDENTIALS = 'docker' // Update with your Docker Hub credentials ID in Jenkins
+    }
+
+    stages {
+        
+        stage('Setup parameters') {
       steps {
         script {
           properties([
@@ -25,12 +33,7 @@ pipeline {
         }
       }
     }
-
-    environment {
-        DOCKER_HUB_CREDENTIALS = 'docker' // Update with your Docker Hub credentials ID in Jenkins
-    }
-
-    stages {
+        
         stage('Clone Repository') {
             steps {
                 script {
