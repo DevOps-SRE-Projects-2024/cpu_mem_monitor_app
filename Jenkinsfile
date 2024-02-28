@@ -1,6 +1,31 @@
 pipeline {
     agent any
 
+    stage('Setup parameters') {
+      steps {
+        script {
+          properties([
+            parameters([
+              string(
+                name: 'GCP_PROJECT_ID',
+                trim: true
+              ),
+              string(
+
+                name: 'GCR_IMAGE_NAME',
+                trim: true
+              ),
+              string(
+
+                name: 'GCR_IMAGE_TAG',
+                trim: true
+              )
+            ])
+          ])
+        }
+      }
+    }
+
     environment {
         DOCKER_HUB_CREDENTIALS = 'docker' // Update with your Docker Hub credentials ID in Jenkins
     }
@@ -36,6 +61,25 @@ pipeline {
                     }
                 }
             }
+
+    stage("Tagging ECR Image") {
+      steps {
+        script {
+          sh "docker tag  cpu_mem_monitor.gcr.io/${params.GCP_PROJECT_ID}/${params.GCR_IMAGE_NAME}:${params.GCR_IMAGE_TAG}"
+
+        }
+      }
+    }
+
+         stage("Pushing ECR Image to GCR") {
+      steps {
+        script {
+          withDockerRegistry([credentialsId: "gcr:${params.GCP_PROJECT_ID}", url: "https://gcr.io"]) {
+            sh "docker push gcr.io/${params.GCP_PROJECT_ID}/${params.GCR_IMAGE_NAME}:${params.GCR_IMAGE_TAG}"
+          }
+        }
+      }
+    }
         }
 /*
         stage('Create EKS Cluster') {
