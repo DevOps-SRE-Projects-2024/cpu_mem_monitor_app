@@ -1,12 +1,6 @@
 pipeline {
     agent any
 
-    
-
-    environment {
-        DOCKER_HUB_CREDENTIALS = 'docker' // Update with your Docker Hub credentials ID in Jenkins
-    }
-
     stages {
         
         stage('Setup parameters') {
@@ -79,9 +73,10 @@ pipeline {
 
           script {
                     // Authenticate Docker with Google Container Registry
-                    withCredentials([gcpServiceAccount(credentialsId: 'jenkins_gcp', projectId: GCP_PROJECT_ID)]) {
-                        sh "gcloud auth configure-docker"
-                    }
+                    withCredentials([file(credentialsId: 'jenkins_gcp', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+                sh "gcloud auth activate-service-account --key-file=\$GOOGLE_APPLICATION_CREDENTIALS"
+                sh "gcloud auth configure-docker"
+            }
                     
                     // Push the Docker image to Google Container Registry
                    sh "docker push cpu_mem_monitor.gcr.io/${params.GCP_PROJECT_ID}/${params.GCR_IMAGE_NAME}:${params.GCR_IMAGE_TAG}"
