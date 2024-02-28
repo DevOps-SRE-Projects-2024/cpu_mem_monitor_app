@@ -70,7 +70,7 @@ pipeline {
             }
                     
                     // Push the Docker image to Google Container Registry
-                   sh "docker push gcr.io/${params.GCP_PROJECT_ID}/${params.GCR_IMAGE_NAME}:${params.GCR_IMAGE_TAG}"
+                   sh "docker push us-docker.pkg.dev/${params.GCP_PROJECT_ID}/${params.GCR_IMAGE_NAME}:${params.GCR_IMAGE_TAG}"
                 }
       }
     }
