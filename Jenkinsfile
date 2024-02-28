@@ -39,7 +39,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                      sh 'docker build -t gcr.io/${params.GCP_PROJECT_ID}/${params.GCR_IMAGE_NAME}:${params.GCR_IMAGE_TAG} .'
+                      sh "docker build -t gcr.io/${params.GCP_PROJECT_ID}/${params.GCR_IMAGE_NAME}:${params.GCR_IMAGE_TAG} ."
                      // sh 'docker run -p 5000:5000 cpu_monitor_image'
                      // Check if a container with the given image is already running
                def existingContainerId = sh(script: 'docker ps | grep "python3 app.py" | awk \'{print $1}\'', returnStdout: true).trim()
