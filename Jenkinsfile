@@ -1,11 +1,11 @@
 pipeline {
     agent any
     environment {
-        AWS_ACCOUNT_ID="533266963923"
+        AWS_ACCOUNT_ID="XXXXXXXXXXXX"
         AWS_DEFAULT_REGION="us-east-1"
         IMAGE_REPO_NAME="cpumemmonitor"
         IMAGE_TAG="v1"
-        REPOSITORY_URI = "533266963923.dkr.ecr.us-east-1.amazonaws.com/cpumemmonitor"
+        REPOSITORY_URI = "XXXXXXXXXXX.dkr.ecr.us-east-1.amazonaws.com/cpumemmonitor"
     }
    
     stages {
