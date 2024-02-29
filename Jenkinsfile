@@ -3,30 +3,6 @@ pipeline {
 
     stages {
         
-        stage('Setup parameters') {
-      steps {
-        script {
-          properties([
-            parameters([
-              string(
-                name: 'GCP_PROJECT_ID',
-                trim: true
-              ),
-              string(
-
-                name: 'GCR_IMAGE_NAME',
-                trim: true
-              ),
-              string(
-
-                name: 'GCR_IMAGE_TAG',
-                trim: true
-              )
-            ])
-          ])
-        }
-      }
-    }
         
         stage('Clone Repository') {
             steps {
@@ -39,7 +15,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                      sh "docker build -t us-docker.pkg.dev/${params.GCP_PROJECT_ID}/${params.GCR_IMAGE_NAME}:${params.GCR_IMAGE_TAG} ."
+                      sh "docker build -t cpu_mem:latest ."
                      // sh 'docker run -p 5000:5000 cpu_monitor_image'
                      // Check if a container with the given image is already running
                def existingContainerId = sh(script: 'docker ps | grep "python3 app.py" | awk \'{print $1}\'', returnStdout: true).trim()
@@ -59,23 +35,6 @@ pipeline {
                 }
             }
 
-         stage("Pushing ECR Image to GCR") {
-      steps {
-
-          script {
-                    // Authenticate Docker with Google Container Registry
-                    withCredentials([file(credentialsId: 'jenkins_gcp', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
-               
-                sh "gcloud auth activate-service-account --key-file=\$GOOGLE_APPLICATION_CREDENTIALS"
-                sh "gcloud auth configure-docker us-docker.pkg.dev"
-            }
-                    
-                    // Push the Docker image to Google Container Registry
-                   sh "gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://us-docker.pkg.dev"
-                   sh "docker push us-docker.pkg.dev/${params.GCP_PROJECT_ID}/${params.GCR_IMAGE_NAME}:${params.GCR_IMAGE_TAG}"
-                }
-      }
-    }
         }
 /*
         stage('Create EKS Cluster') {
