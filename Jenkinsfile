@@ -18,7 +18,7 @@ pipeline {
             }
                  
             }
-        }
+        } }
         
         stage('Cloning Git') {
             steps {
@@ -44,7 +44,6 @@ pipeline {
          }
         }
       }
-    }
 }
 }
 
